@@ -1,0 +1,6 @@
+{{- $someObj := map "X" "chuck" "Y" "norris" "Z" 1234 -}}
+{{ .B | default "BLAAAAH" }}
+abcde
+{{ .A }}
+{{ template "test2.tmpl" $someObj }}
+EOF
