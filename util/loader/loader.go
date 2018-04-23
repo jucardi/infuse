@@ -1,4 +1,4 @@
-package templates
+package loader
 
 import (
 	"encoding/json"
@@ -7,12 +7,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jucardi/gotmpl/util/log"
+	"github.com/jucardi/go-infuse/util/log"
 )
 
-func loadTemplates(searchArg string) (map[string]string, error) {
+func LoadTemplates(searchArg string) (map[string]string, error) {
 	log.Debug(" <-- loadtemplates entry")
-
 	ret := map[string]string{}
 	matches, err := filepath.Glob(searchArg)
 
@@ -29,7 +28,7 @@ func loadTemplates(searchArg string) (map[string]string, error) {
 			continue
 		}
 
-		if str, err := loadTemplate(f); err != nil {
+		if str, err := LoadTemplate(f); err != nil {
 			return nil, fmt.Errorf("failed to load '%s'", f)
 		} else {
 			ret[inf.Name()] = str
@@ -39,14 +38,14 @@ func loadTemplates(searchArg string) (map[string]string, error) {
 	return ret, nil
 }
 
-func loadTemplate(filename string) (string, error) {
+func LoadTemplate(filename string) (string, error) {
 	log.Debug(" <-- loadtemplate entry")
 	bs, err := ioutil.ReadFile(filename)
 	return string(bs), err
 }
 
-func loadJSON(jsonStr string) (map[string]interface{}, error) {
-	log.Debug(" <-- loadJSON entry")
+func LoadJSON(jsonStr string) (map[string]interface{}, error) {
+	log.Debug(" <-- LoadJSON entry")
 	ret := map[string]interface{}{}
 	err := json.Unmarshal([]byte(jsonStr), &ret)
 	return ret, err

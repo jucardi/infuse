@@ -3,7 +3,7 @@ package log
 import (
 	"os"
 
-	"github.com/jucardi/gotmpl/config"
+	"github.com/jucardi/go-infuse/config"
 	"github.com/sirupsen/logrus"
 )
 
@@ -41,6 +41,7 @@ func Errorf(format string, args ...interface{}) {
 func Panic(args ...interface{}) {
 	logrus.Error(args...)
 	if config.Get().Verbose {
+		// logrus panic adds multiple unnecesary internal logrus traces to the stack.
 		panic("")
 	}
 	os.Exit(-1)
@@ -50,6 +51,7 @@ func Panic(args ...interface{}) {
 func Panicf(format string, args ...interface{}) {
 	logrus.Errorf(format, args...)
 	if config.Get().Verbose {
+		// logrus panic adds multiple unnecesary internal logrus traces to the stack.
 		panic("")
 	}
 

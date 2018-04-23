@@ -4,10 +4,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/jucardi/gotmpl/util/ioutils"
-	"github.com/jucardi/gotmpl/util/log"
-	"github.com/jucardi/gotmpl/util/templates"
+	"github.com/jucardi/go-infuse/util/ioutils"
+	"github.com/jucardi/go-infuse/util/log"
 	"github.com/spf13/cobra"
+	"github.com/jucardi/go-infuse/components/gotmpl"
 )
 
 var rootCmd = &cobra.Command{
@@ -47,7 +47,7 @@ func parse(cmd *cobra.Command, args []string) {
 		os.Exit(-1)
 	}
 
-	template := templates.New(args[0])
+	template := gotmpl.New(args[0])
 	var writer io.Writer
 
 	// Load template definitions.
@@ -71,7 +71,7 @@ func parse(cmd *cobra.Command, args []string) {
 
 	// Establish the io.Writer to use
 	if output, _ := cmd.Flags().GetString("output"); output != "" {
-		writer = ioutils.NewFileWritter(output)
+		writer = ioutils.NewFileWriter(output)
 	} else {
 		writer = os.Stdout
 	}

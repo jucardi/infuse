@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/jucardi/gotmpl/config"
+	"github.com/jucardi/go-infuse/config"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
