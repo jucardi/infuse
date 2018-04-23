@@ -48,7 +48,7 @@ func parse(cmd *cobra.Command, args []string) {
 	}
 
 	template := gotmpl.New(args[0])
-	var writer io.Writer
+	var writer io.WriteCloser
 
 	// Load template definitions.
 	if definitions, _ := cmd.Flags().GetStringArray("definitions"); len(definitions) > 0 {
@@ -71,7 +71,12 @@ func parse(cmd *cobra.Command, args []string) {
 
 	// Establish the io.Writer to use
 	if output, _ := cmd.Flags().GetString("output"); output != "" {
-		writer = ioutils.NewFileWriter(output)
+		if w, err := ioutils.NewFileWriter(output); err != nil {
+			log.Panicf("Unable to open file '%s', err", output, err)
+		} else {
+			writer = w
+			defer w.Close()
+		}
 	} else {
 		writer = os.Stdout
 	}

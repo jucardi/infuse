@@ -18,12 +18,12 @@ type Template struct {
 }
 
 // ParseJSON parses the template using the string representation of a JSON
-func (t *Template) ParseJSON(writter io.Writer, jsonStr string) error {
+func (t *Template) ParseJSON(writer io.Writer, jsonStr string) error {
 	val, err := loader.LoadJSON(jsonStr)
 	if err != nil {
 		return fmt.Errorf("an error ocurred while unmarshalling the JSON, %v", err)
 	}
-	return t.Parse(writter, val)
+	return t.Parse(writer, val)
 }
 
 // Parse parses the template
