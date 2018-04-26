@@ -3,5 +3,4 @@
 test-artifacts
 go-infuse
 build/
-cmd/
 tmp/
