@@ -1,7 +1,7 @@
 GO_FMT     = gofmt -s -w -l .
-BUILD_TIME = $(shell date +%Y%m%dT%H%M)
+BUILD_TIME = $(shell date +%Y-%m-%dT%H:%M:%s)
 PKGROOT    = github.com/jucardi/go-infuse
-VERSION   ?= -dev
+VERSION   ?= git.commit-$(shell git rev-parse HEAD).local
 
 vet:
 	@go vet ./...

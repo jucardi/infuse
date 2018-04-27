@@ -14,11 +14,13 @@ import (
 
 const (
 	Usage = `
-Infuse v%s.%s
+Infuse - the templates CLI parser
+    Version: V-%s
+    Built: %s
 
-Template parser, supports:
-	- Go templates
-	- Handlebars templates
+Supports:
+    - Go templates
+    - Handlebars templates
 `
 )
 
