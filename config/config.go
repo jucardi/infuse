@@ -2,7 +2,8 @@ package config
 
 // Config encapsulates the configuration for the process.
 type Config struct {
-	Verbose bool
+	Verbose     bool
+	DefaultType string
 }
 
 var instance *Config
@@ -10,7 +11,7 @@ var instance *Config
 // Get gets the configuration instance.
 func Get() *Config {
 	if instance == nil {
-		instance = &Config{}
+		instance = &Config{DefaultType: "go"}
 	}
 	return instance
 }

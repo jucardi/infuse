@@ -6,14 +6,15 @@ import (
 	"os"
 
 	"github.com/jucardi/go-infuse/cmd/infuse/version"
-	"github.com/jucardi/go-infuse/components/gotmpl"
+	"github.com/jucardi/go-infuse/templates"
 	"github.com/jucardi/go-infuse/util/ioutils"
 	"github.com/jucardi/go-infuse/util/log"
 	"github.com/spf13/cobra"
 )
 
 const (
-	Usage = `
+	usage = "%s [template file] [JSON string]"
+	long  = `
 Infuse - the templates CLI parser
     Version: V-%s
     Built: %s
@@ -27,7 +28,7 @@ Supports:
 var rootCmd = &cobra.Command{
 	Use:              "infuse",
 	Short:            "Parses a Golang template",
-	Long:             fmt.Sprintf(Usage, version.Version, version.Built),
+	Long:             fmt.Sprintf(long, version.Version, version.Built),
 	PersistentPreRun: initCmd,
 	Run:              parse,
 }
@@ -44,12 +45,13 @@ func Execute() {
 }
 
 func printUsage(cmd *cobra.Command) {
-	cmd.Println(fmt.Sprintf(Usage, version.Version, version.Built))
+	cmd.Println(fmt.Sprintf(long, version.Version, version.Built))
 	cmd.Usage()
 }
 
 func initCmd(cmd *cobra.Command, args []string) {
 	FromCommand(cmd)
+	cmd.Use = fmt.Sprintf(usage, cmd.Use)
 }
 
 func parse(cmd *cobra.Command, args []string) {
@@ -59,7 +61,7 @@ func parse(cmd *cobra.Command, args []string) {
 		os.Exit(-1)
 	}
 
-	template := gotmpl.New(args[0])
+	template := templates.Factory().New(args[0])
 	var writer io.WriteCloser
 
 	// Load template definitions.
