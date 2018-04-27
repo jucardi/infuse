@@ -1,6 +1,6 @@
 .idea
 .DS_Store
 test-artifacts
-go-infuse
+ginfuse
 build/
 tmp/

@@ -1,4 +1,7 @@
-GO_FMT = gofmt -s -w -l .
+GO_FMT     = gofmt -s -w -l .
+BUILD_TIME = $(shell date +%Y%m%dT%H%M)
+PKGROOT    = github.com/jucardi/go-infuse
+VERSION   ?= -dev
 
 vet:
 	@go vet ./...
@@ -28,12 +31,11 @@ test: test-deps
 
 compile-all:
 	@echo "compiling..."
-	@go get github.com/inconshreveable/mousetrap
 	@rm -rf build
 	@mkdir build
 	@echo "building linux binary..."
-	@GOOS=linux GOARCH=amd64 go build -ldflags "-X $(PKGROOT)/server/version.Version=$(TAG) -X $(PKGROOT)/server/version.Built=$(BUILD_TIME)" -o build/infuse-linux-amd64
+	@GOOS=linux GOARCH=amd64 go build -ldflags "-X github.com/jucardi/go-infuse/cmd/infuse/version.Version=$(VERSION) -X github.com/jucardi/go-infuse/cmd/infuse/version.Built=$(BUILD_TIME)" -o build/infuse-linux-amd64 ./cmd/infuse
 	@echo "building macosx binary..."
-	@GOOS=darwin GOARCH=amd64 go build -ldflags "-X $(PKGROOT)/server/version.Version=$(TAG) -X $(PKGROOT)/server/version.Built=$(BUILD_TIME)" -o build/infuse-darwin-amd64
+	@GOOS=darwin GOARCH=amd64 go build -ldflags "-X github.com/jucardi/go-infuse/cmd/infuse/version.Version=$(VERSION) -X github.com/jucardi/go-infuse/cmd/infuse/version.Built=$(BUILD_TIME)" -o build/infuse-darwin-amd64 ./cmd/infuse
 	@echo "building windows binary..."
-	@GOOS=windows GOARCH=amd64 go build -ldflags "-X $(PKGROOT)/server/version.Version=$(TAG) -X $(PKGROOT)/server/version.Built=$(BUILD_TIME)" -o build/infuse-windows-amd64
+	@GOOS=windows GOARCH=amd64 go build -ldflags "-X github.com/jucardi/go-infuse/cmd/infuse/version.Version=$(VERSION) -X github.com/jucardi/go-infuse/cmd/infuse/version.Built=$(BUILD_TIME)" -o build/infuse-windows-amd64.exe ./cmd/infuse

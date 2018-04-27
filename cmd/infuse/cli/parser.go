@@ -1,30 +1,40 @@
 package cli
 
 import (
+	"fmt"
 	"io"
 	"os"
 
+	"github.com/jucardi/go-infuse/cmd/infuse/version"
+	"github.com/jucardi/go-infuse/components/gotmpl"
 	"github.com/jucardi/go-infuse/util/ioutils"
 	"github.com/jucardi/go-infuse/util/log"
 	"github.com/spf13/cobra"
-	"github.com/jucardi/go-infuse/components/gotmpl"
+)
+
+const (
+	Usage = `
+Infuse v%s.%s
+
+Template parser, supports:
+	- Go templates
+	- Handlebars templates
+`
 )
 
 var rootCmd = &cobra.Command{
-	Use:              "gotmpl",
+	Use:              "infuse",
 	Short:            "Parses a Golang template",
-	Long:             "Parses a Golang template by passing a template file and a string JSON representation",
+	Long:             fmt.Sprintf(Usage, version.Version, version.Built),
 	PersistentPreRun: initCmd,
 	Run:              parse,
 }
 
 // Execute starts the execution of the parse command.
 func Execute() {
-	// Adds the debug flag
-	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Enables debug level logging")
-	rootCmd.PersistentFlags().StringP("output", "o", "", "Set output file. If not specified, the resulting template will be printed to Stdout")
-	rootCmd.PersistentFlags().StringArrayP("definitions", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
-	rootCmd.PersistentFlags().StringP("pattern", "p", "", "Uses a search pattern to load definition files to be used in the 'templates' directive.")
+	rootCmd.Flags().StringP("output", "o", "", "Set output file. If not specified, the resulting template will be printed to Stdout")
+	rootCmd.Flags().StringArrayP("definitions", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
+	rootCmd.Flags().StringP("pattern", "p", "", "Uses a search pattern to load definition files to be used in the 'templates' directive.")
 
 	if err := rootCmd.Execute(); err != nil {
 		printUsage(rootCmd)
@@ -32,8 +42,8 @@ func Execute() {
 }
 
 func printUsage(cmd *cobra.Command) {
-	cmd.Println()
-	cmd.Println(cmd.UsageString())
+	cmd.Println(fmt.Sprintf(Usage, version.Version, version.Built))
+	cmd.Usage()
 }
 
 func initCmd(cmd *cobra.Command, args []string) {
