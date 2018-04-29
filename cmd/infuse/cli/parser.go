@@ -64,6 +64,7 @@ func parse(cmd *cobra.Command, args []string) {
 	template := templates.Factory().New(args[0])
 	var writer io.WriteCloser
 
+	fmt.Println("types", templates.Factory().GetAvaliableTypes())
 	// Load template definitions.
 	if definitions, _ := cmd.Flags().GetStringArray("definitions"); len(definitions) > 0 {
 		if err := template.LoadFileDefinition(definitions...); err != nil {

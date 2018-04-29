@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/jucardi/go-infuse/templates/gotmpl"
+	"github.com/jucardi/go-infuse/templates/handlebars"
 
 	"github.com/jucardi/go-infuse/config"
 )
@@ -67,4 +68,5 @@ func (f *factory) Contains(typeStr string) bool {
 
 func init() {
 	Factory().Register("go", func(name ...string) ITemplate { return gotmpl.New(name...) })
+	Factory().Register("handlebars", func(name ...string) ITemplate { return handlebars.New(name...) })
 }
