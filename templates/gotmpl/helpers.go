@@ -3,20 +3,38 @@ package gotmpl
 import (
 	"fmt"
 	"reflect"
+
 	"text/template"
+
+	"github.com/jucardi/go-infuse/templates/helpers"
 
 	"github.com/jucardi/go-infuse/util/log"
 )
 
-var defaultFuncs = template.FuncMap{
-	"default":       defaultFn,
-	"template_file": templateFn,
-	"map":           mapFn,
-	"dict":          mapFn,
+var instance helpers.IHelpersManager
+
+// Helpers returns the singleton helpers instance used for Go templates
+func Helpers() helpers.IHelpersManager {
+	if instance == nil {
+		instance = helpers.New()
+	}
+	return instance
 }
 
-func defaultFuncMap() template.FuncMap {
-	return defaultFuncs
+func getHelpers() template.FuncMap {
+	ret := template.FuncMap{}
+	for _, v := range Helpers().Get() {
+		ret[v.Name] = v.Function
+	}
+	return ret
+}
+
+func init() {
+	helpers.RegisterCommon(Helpers())
+	Helpers().Register("default", defaultFn)
+	Helpers().Register("template_file", templateFn)
+	Helpers().Register("map", mapFn)
+	Helpers().Register("dict", mapFn)
 }
 
 func defaultFn(val interface{}) interface{} {

@@ -22,7 +22,7 @@ func (t *GoTemplate) Type() string {
 // Parse parses the template
 func (t *GoTemplate) Parse(writer io.Writer, data interface{}) error {
 	str := t.prepare()
-	tmpl := template.New(t.NameStr).Funcs(defaultFuncMap())
+	tmpl := template.New(t.NameStr).Funcs(getHelpers())
 	if _, err := tmpl.Parse(str); err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func New(name ...string) *GoTemplate {
 }
 
 func validate(name, tmpl string, successFn func()) error {
-	_, err := template.New(name).Funcs(defaultFuncMap()).Parse(tmpl)
+	_, err := template.New(name).Funcs(getHelpers()).Parse(tmpl)
 
 	if err != nil {
 		return fmt.Errorf("unable to load definition '%s', %v", name, err)
