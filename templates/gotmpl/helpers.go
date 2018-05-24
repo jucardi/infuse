@@ -2,12 +2,11 @@ package gotmpl
 
 import (
 	"fmt"
+	"os"
 	"reflect"
-
 	"text/template"
 
 	"github.com/jucardi/infuse/templates/helpers"
-
 	"github.com/jucardi/infuse/util/log"
 )
 
@@ -35,6 +34,7 @@ func init() {
 	Helpers().Register("template_file", templateFn)
 	Helpers().Register("map", mapFn)
 	Helpers().Register("dict", mapFn)
+	Helpers().Register("env", envFn)
 }
 
 func defaultFn(val interface{}) interface{} {
@@ -59,4 +59,8 @@ func mapFn(args ...interface{}) map[string]interface{} {
 	}
 
 	return ret
+}
+
+func envFn(name string) string {
+	return os.Getenv(name)
 }
