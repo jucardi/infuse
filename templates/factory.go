@@ -3,10 +3,10 @@ package templates
 import (
 	"errors"
 
-	"github.com/jucardi/go-infuse/templates/gotmpl"
-	"github.com/jucardi/go-infuse/templates/handlebars"
+	"github.com/jucardi/infuse/templates/gotmpl"
+	"github.com/jucardi/infuse/templates/handlebars"
 
-	"github.com/jucardi/go-infuse/config"
+	"github.com/jucardi/infuse/config"
 )
 
 // ErrTypeNotFound is returned when the template type does not match a defined template implementation

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/jucardi/go-strings"
+	"github.com/jucardi/go-strings/stringx"
 )
 
 // IHelpersManager represents a template helpers managers
@@ -30,13 +30,13 @@ type Helper struct {
 	Function    interface{}
 }
 
-// HelpersManager is the basic implementation of IHelpersManager, administers helpers to be used by templates
-type HelpersManager struct {
+// Manager is the basic implementation of IHelpersManager, administers helpers to be used by templates
+type Manager struct {
 	helpers map[string]*Helper
 }
 
 // Get returns the helpers that have been registered to the manager
-func (a *HelpersManager) Get() []*Helper {
+func (a *Manager) Get() []*Helper {
 	var ret []*Helper
 	for _, v := range a.helpers {
 		ret = append(ret, v)
@@ -45,7 +45,7 @@ func (a *HelpersManager) Get() []*Helper {
 }
 
 // Register registers a helper function to be used with Go templates.
-func (a *HelpersManager) Register(name string, fn interface{}, description ...string) error {
+func (a *Manager) Register(name string, fn interface{}, description ...string) error {
 	if name == "" {
 		return errors.New("the helper name cannot be empty")
 	}
@@ -68,17 +68,17 @@ func (a *HelpersManager) Register(name string, fn interface{}, description ...st
 }
 
 // Contains indicates whether a helper is contained by the manager
-func (a *HelpersManager) Contains(name string) bool {
+func (a *Manager) Contains(name string) bool {
 	_, ok := a.helpers[name]
 	return ok
 }
 
 // Remove removes a helper by the given name, does nothing if the helper is not present
-func (a *HelpersManager) Remove(name string) {
+func (a *Manager) Remove(name string) {
 	delete(a.helpers, name)
 }
 
 // New returns a new instance of HelpersManager
 func New() IHelpersManager {
-	return &HelpersManager{helpers: map[string]*Helper{}}
+	return &Manager{helpers: map[string]*Helper{}}
 }

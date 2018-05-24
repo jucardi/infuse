@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/jucardi/go-infuse/util/loader"
+	"github.com/jucardi/infuse/util/loader"
 )
 
 // AbstractTemplate encapsulates the common functionality of an ITemplate implementation

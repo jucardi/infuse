@@ -6,9 +6,9 @@ import (
 
 	"text/template"
 
-	"github.com/jucardi/go-infuse/templates/helpers"
+	"github.com/jucardi/infuse/templates/helpers"
 
-	"github.com/jucardi/go-infuse/util/log"
+	"github.com/jucardi/infuse/util/log"
 )
 
 var instance helpers.IHelpersManager

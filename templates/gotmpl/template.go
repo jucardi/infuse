@@ -5,22 +5,22 @@ import (
 	"io"
 	"text/template"
 
-	"github.com/jucardi/go-infuse/templates/base"
-	"github.com/jucardi/go-strings"
+	"github.com/jucardi/go-strings/stringx"
+	"github.com/jucardi/infuse/templates/base"
 )
 
-// GoTemplate represents the implementation of ITemplate for Go templates
-type GoTemplate struct {
+// Template represents the implementation of ITemplate for Go templates
+type Template struct {
 	*base.AbstractTemplate
 }
 
 // Type returns the template type of this instance.
-func (t *GoTemplate) Type() string {
+func (t *Template) Type() string {
 	return "go"
 }
 
 // Parse parses the template
-func (t *GoTemplate) Parse(writer io.Writer, data interface{}) error {
+func (t *Template) Parse(writer io.Writer, data interface{}) error {
 	str := t.prepare()
 	tmpl := template.New(t.NameStr).Funcs(getHelpers())
 	if _, err := tmpl.Parse(str); err != nil {
@@ -31,20 +31,20 @@ func (t *GoTemplate) Parse(writer io.Writer, data interface{}) error {
 }
 
 // LoadTemplate loads the given string as the template to be parsed.
-func (t *GoTemplate) LoadTemplate(tmpl string) error {
+func (t *Template) LoadTemplate(tmpl string) error {
 	return validate(t.NameStr, tmpl, func() {
 		t.Template = tmpl
 	})
 }
 
 // LoadDefinition loads the give template string as a definition {{define "name"}}, using the given name as the name of the definition, to be used for 'template' directives.
-func (t *GoTemplate) LoadDefinition(name, tmpl string) error {
+func (t *Template) LoadDefinition(name, tmpl string) error {
 	return validate(name, tmpl, func() {
 		t.Definitions[name] = tmpl
 	})
 }
 
-func (t *GoTemplate) prepare() string {
+func (t *Template) prepare() string {
 	builder := stringx.Builder()
 
 	for k, v := range t.Definitions {
@@ -60,8 +60,8 @@ func (t *GoTemplate) prepare() string {
 }
 
 // New creates a new template utility which extends the default built in functions for Go templates.
-func New(name ...string) *GoTemplate {
-	gt := &GoTemplate{}
+func New(name ...string) *Template {
+	gt := &Template{}
 	bt := &base.AbstractTemplate{
 		IAbstractTemplateMembers: gt,
 		NameStr:                  stringx.GetOrDefault("base", name...),

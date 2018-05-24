@@ -3,7 +3,7 @@ package cli
 import (
 	"os"
 
-	"github.com/jucardi/go-infuse/config"
+	"github.com/jucardi/infuse/config"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

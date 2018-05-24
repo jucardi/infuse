@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jucardi/go-infuse/util/log"
+	"github.com/jucardi/infuse/util/log"
 )
 
 func LoadTemplates(searchArg string) (map[string]string, error) {

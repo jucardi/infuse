@@ -3,7 +3,7 @@ package log
 import (
 	"os"
 
-	"github.com/jucardi/go-infuse/config"
+	"github.com/jucardi/infuse/config"
 	"github.com/sirupsen/logrus"
 )
 

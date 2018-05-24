@@ -5,10 +5,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/jucardi/go-infuse/cmd/infuse/version"
-	"github.com/jucardi/go-infuse/templates"
-	"github.com/jucardi/go-infuse/util/ioutils"
-	"github.com/jucardi/go-infuse/util/log"
+	"github.com/jucardi/infuse/cmd/infuse/version"
+	"github.com/jucardi/infuse/templates"
+	"github.com/jucardi/infuse/util/ioutils"
+	"github.com/jucardi/infuse/util/log"
 	"github.com/spf13/cobra"
 )
 

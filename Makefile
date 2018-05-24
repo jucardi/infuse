@@ -1,6 +1,6 @@
 GO_FMT     = gofmt -s -w -l .
 BUILD_TIME = $(shell date +%Y-%m-%dT%H:%M:%s)
-PKGROOT    = github.com/jucardi/go-infuse
+CMDROOT    = github.com/jucardi/infuse/cmd/infuse
 VERSION   ?= git.commit-$(shell git rev-parse HEAD).local
 
 vet:
@@ -34,8 +34,11 @@ compile-all:
 	@rm -rf build
 	@mkdir build
 	@echo "building linux binary..."
-	@GOOS=linux GOARCH=amd64 go build -ldflags "-X github.com/jucardi/go-infuse/cmd/infuse/version.Version=$(VERSION) -X github.com/jucardi/go-infuse/cmd/infuse/version.Built=$(BUILD_TIME)" -o build/infuse-linux-amd64 ./cmd/infuse
+	@GOOS=linux GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-linux-amd64 ./cmd/infuse
 	@echo "building macosx binary..."
-	@GOOS=darwin GOARCH=amd64 go build -ldflags "-X github.com/jucardi/go-infuse/cmd/infuse/version.Version=$(VERSION) -X github.com/jucardi/go-infuse/cmd/infuse/version.Built=$(BUILD_TIME)" -o build/infuse-darwin-amd64 ./cmd/infuse
+	@GOOS=darwin GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-darwin-amd64 ./cmd/infuse
 	@echo "building windows binary..."
-	@GOOS=windows GOARCH=amd64 go build -ldflags "-X github.com/jucardi/go-infuse/cmd/infuse/version.Version=$(VERSION) -X github.com/jucardi/go-infuse/cmd/infuse/version.Built=$(BUILD_TIME)" -o build/infuse-windows-amd64.exe ./cmd/infuse
+	@GOOS=windows GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-windows-amd64.exe ./cmd/infuse
+
+install:
+	@go install -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" ./cmd/infuse

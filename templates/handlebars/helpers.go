@@ -2,7 +2,7 @@ package handlebars
 
 import (
 	"github.com/aymerick/raymond"
-	"github.com/jucardi/go-infuse/templates/helpers"
+	"github.com/jucardi/infuse/templates/helpers"
 )
 
 type hbHelpersManager struct {

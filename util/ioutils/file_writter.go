@@ -3,7 +3,8 @@ package ioutils
 import (
 	"io"
 	"os"
-	"github.com/jucardi/go-infuse/util/log"
+
+	"github.com/jucardi/infuse/util/log"
 )
 
 type fileWriter struct {
