@@ -23,8 +23,8 @@ func (t *AbstractTemplate) Name() string {
 }
 
 // ParseJSON parses the template using the string representation of a JSON
-func (t *AbstractTemplate) ParseJSON(writer io.Writer, jsonStr string) error {
-	val, err := loader.LoadJSON(jsonStr)
+func (t *AbstractTemplate) ParseJSON(writer io.Writer, data []byte) error {
+	val, err := loader.LoadJSON(data)
 	if err != nil {
 		return fmt.Errorf("an error ocurred while unmarshalling the JSON, %v", err)
 	}

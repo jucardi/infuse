@@ -10,6 +10,7 @@ import (
 	"github.com/jucardi/infuse/util/log"
 )
 
+// LoadTemplates loads multiple template files and returns a map of filename,value
 func LoadTemplates(searchArg string) (map[string]string, error) {
 	log.Debug(" <-- loadtemplates entry")
 	ret := map[string]string{}
@@ -38,15 +39,16 @@ func LoadTemplates(searchArg string) (map[string]string, error) {
 	return ret, nil
 }
 
+// LoadTemplate loads a file template
 func LoadTemplate(filename string) (string, error) {
 	log.Debug(" <-- loadtemplate entry")
 	bs, err := ioutil.ReadFile(filename)
 	return string(bs), err
 }
 
-func LoadJSON(jsonStr string) (map[string]interface{}, error) {
-	log.Debug(" <-- LoadJSON entry")
-	ret := map[string]interface{}{}
-	err := json.Unmarshal([]byte(jsonStr), &ret)
-	return ret, err
+// LoadJSON attempts to unmarshall the byte data provided to a map[string]interface{}
+func LoadJSON(data []byte) (ret map[string]interface{}, err error) {
+	ret = map[string]interface{}{}
+	err = json.Unmarshal(data, &ret)
+	return
 }

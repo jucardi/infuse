@@ -40,8 +40,8 @@ type ITemplate interface {
 	// Type returns the template type of this instance.
 	Type() string
 
-	// ParseJSON parses the template using the string representation of a JSON
-	ParseJSON(writer io.Writer, jsonStr string) error
+	// ParseJSON attempts to unmarshall the byte data provided and parses the template.
+	ParseJSON(writer io.Writer, data []byte) error
 
 	// Parse parses the template
 	Parse(writer io.Writer, data interface{}) error
