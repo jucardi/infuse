@@ -78,11 +78,12 @@ func parse(cmd *cobra.Command, args []string) {
 	}
 
 	if err := parser.Parse(request); err != nil {
-		log.Panicf("%v", err)
+		log.Errorf("%v", err)
+		printUsage(cmd)
+		os.Exit(-1)
 	}
 }
 
 func validate(args []string) bool {
 	return len(args) == 1
-
 }

@@ -22,9 +22,6 @@ type TemplateRequest struct {
 }
 
 func (t TemplateRequest) validate() error {
-	if t.InputFile == "" && t.JSON == "" {
-		return errors.New("an input file or a json string is required as a parsing data source")
-	}
 	if t.InputFile != "" && t.JSON != "" {
 		return errors.New("specify either an input file or a json string but not both")
 	}
@@ -35,6 +32,9 @@ func (t TemplateRequest) validate() error {
 }
 
 func (t TemplateRequest) load() ([]byte, error) {
+	if t.InputFile == "" && t.JSON == "" {
+		return []byte("{}"), nil
+	}
 	if t.InputFile != "" {
 		return ioutil.ReadFile(t.InputFile)
 	}
