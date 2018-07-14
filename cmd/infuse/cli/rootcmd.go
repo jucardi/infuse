@@ -11,15 +11,18 @@ import (
 )
 
 const (
-	usage = "%s [template file] -j [json file]"
-	long  = `
+	usage = `%s [template file] -i [JSON or YAML file] -u [URL to GET JSON or INPUT from] -s [JSON or YAML string] -o [output] -p [pattern] -d [template path 1] -d [template path 2]
+
+  - All flags are optional
+  - Max one input type allowed (-f, -s, -u)`
+	long = `
 Infuse - the templates CLI parser
     Version: V-%s
     Built: %s
 
 Supports:
     - Go templates
-    - Handlebars templates
+    - Handlebars templates (coming soon)
 `
 )
 
@@ -33,15 +36,14 @@ var rootCmd = &cobra.Command{
 
 // Execute starts the execution of the parse command.
 func Execute() {
-	rootCmd.Flags().StringP("json", "j", "", "A JSON file to use as an input for the data to be parsed")
-	rootCmd.Flags().StringP("string", "s", "", "The JSON string to use as an input for the data to be parsed")
+	rootCmd.Flags().StringP("file", "f", "", "INPUT: A JSON or YAML file to use as an input for the data to be parsed")
+	rootCmd.Flags().StringP("string", "s", "", "INPUT: A JSON or YAML string representation")
+	rootCmd.Flags().StringP("url", "u", "", "INPUT: A URL to HTTP GET a JSON or YAML file from. Useful to parse data from config servers")
 	rootCmd.Flags().StringP("output", "o", "", "Set output file. If not specified, the resulting template will be printed to Stdout")
-	rootCmd.Flags().StringArrayP("definitions", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
 	rootCmd.Flags().StringP("pattern", "p", "", "Uses a search pattern to load definition files to be used in the 'templates' directive.")
+	rootCmd.Flags().StringArrayP("definitions", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
 
-	if err := rootCmd.Execute(); err != nil {
-		printUsage(rootCmd)
-	}
+	rootCmd.Execute()
 }
 
 func printUsage(cmd *cobra.Command) {
@@ -62,15 +64,17 @@ func parse(cmd *cobra.Command, args []string) {
 	}
 
 	filename := args[0]
-	input, _ := cmd.Flags().GetString("json")
-	json, _ := cmd.Flags().GetString("string")
+	input, _ := cmd.Flags().GetString("file")
+	str, _ := cmd.Flags().GetString("string")
+	url, _ := cmd.Flags().GetString("url")
 	output, _ := cmd.Flags().GetString("output")
 	definitions, _ := cmd.Flags().GetStringArray("definitions")
 	pattern, _ := cmd.Flags().GetString("pattern")
 
 	request := parser.TemplateRequest{
 		Filename:      filename,
-		JSON:          json,
+		String:        str,
+		URL:           url,
 		InputFile:     input,
 		Definitions:   definitions,
 		SearchPattern: pattern,

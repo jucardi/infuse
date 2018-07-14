@@ -14,7 +14,6 @@ const (
 
 // IFactory represents the available functions of the templates factory
 type IFactory interface {
-
 	// New creates a new default template type, defined in the configuration. If the default template type is not found, returns the implementation of Go Templates.
 	New(name ...string) ITemplate
 
@@ -33,15 +32,20 @@ type IFactory interface {
 
 // ITemplate represents the templates interface to be used for template parsing.
 type ITemplate interface {
-
 	// Name represents the name of the ITemplate instance.
 	Name() string
 
 	// Type returns the template type of this instance.
 	Type() string
 
-	// ParseJSON attempts to unmarshall the byte data provided and parses the template.
+	// ParseMarshalled attempts to unmarshall the byte data provided and parses the template.
+	ParseMarshalled(writer io.Writer, data []byte) error
+
+	// ParseJSON attempts to unmarshall the byte data provided as a JSON object and parses the template.
 	ParseJSON(writer io.Writer, data []byte) error
+
+	// ParseYAML attempts to unmarshall the byte data provided as a YAML object and parses the template.
+	ParseYAML(writer io.Writer, data []byte) error
 
 	// Parse parses the template
 	Parse(writer io.Writer, data interface{}) error

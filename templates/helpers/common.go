@@ -2,6 +2,8 @@ package helpers
 
 import (
 	"fmt"
+	"github.com/jucardi/infuse/util/log"
+	"gopkg.in/yaml.v2"
 	"strings"
 )
 
@@ -14,6 +16,8 @@ func RegisterCommon(manager IHelpersManager) {
 	manager.Register("uppercase", uppercaseFn)
 	manager.Register("lowercase", lowercaseFn)
 	manager.Register("br", bracketsFn)
+	manager.Register("yaml", toYMLString)
+	manager.Register("rem", comment)
 }
 
 /** String helpers */
@@ -36,4 +40,15 @@ func uppercaseFn(arg string) string {
 
 func bracketsFn(arg interface{}) string {
 	return fmt.Sprintf("{{%+v}}", arg)
+}
+
+func toYMLString(arg interface{}) string {
+	result, err := yaml.Marshal(arg)
+	if err != nil {
+		log.Panicf("error occurred while converting object to YAML. %+v", err)
+	}
+	return string(result)
+}
+func comment(args ...interface{}) string {
+	return ""
 }
