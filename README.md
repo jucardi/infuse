@@ -14,6 +14,73 @@ go get github.com/jucardi/infuse
 
 The command line tool is a convenient terminal command that allows to parse a template, passing the a JSON or YAML representation to be used as values within the template.
 
+
+### How to install it
+
+There are a few options to install the CLI tool.
+
+#### Download the release file
+
+##### For UNIX (Mac and Linux)
+
+1) Download the binary
+
+    ```bash
+    sudo curl -L https://github.com/jucardi/infuse/releases/download/V-0.1-alpha/infuse-$(uname -s)-$(uname -m) -o /usr/local/bin/infuse
+    ```
+
+2) Apply executable permissions
+
+    ```bash
+    sudo chmod +x /usr/local/bin/infuse
+    ```
+
+3) Test the installation
+
+    ```bash
+    infuse --help
+    ```
+
+#### Install using Go
+
+```bash
+go get -u github.com/jucardi/infuse/cmd/infuse
+```
+
+#### Installing the CLI from the source code directory
+
+Using `make` run
+
+```bash
+make install
+```
+
+This `make` recipe will compile the binary for your local architecture and place it under `$GOPATH/bin` via `go install`
+
+#### Building the CLI binaries from code
+
+Using `make` run
+
+```bash
+make compile-all
+```
+
+This `make` recipe will build the binaries for Linux, Mac and Windows under the `build` directory.
+
+### Uninstallation
+
+#### If installed using the first method (downloading the release)
+
+```bash
+sudo rm /usr/local/bin/infuse
+```
+
+#### If installed using Go
+
+```bash
+rm $GOPATH/bin/infuse
+```
+
 ### Usage
 
 ```bash
@@ -146,72 +213,6 @@ volumes:
     driver_opts:
       mountpoint: /mnt/db-data/{{ .name }}-mongodb
 
-```
-
-### How to install it
-
-There are a few options to install the CLI tool.
-
-#### Download the release file
-
-##### For UNIX (Mac and Linux)
-
-1) Download the binary
-
-    ```bash
-    https://github.com/jucardi/infuse/releases/download/V-0.1-alpha/infuse-$(uname -s)-$(uname -m) -o /usr/local/bin/infuse
-    ```
-
-2) Apply executable permissions
-
-    ```bash
-    sudo chmod +x /usr/local/bin/infuse
-    ```
-
-3) Test the installation
-
-    ```bash
-    infuse --help
-    ```
-
-#### Install using Go
-
-```bash
-go get -u github.com/jucardi/infuse/cmd/infuse
-```
-
-#### Installing the CLI from the source code directory
-
-Using `make` run
-
-```bash
-make install
-```
-
-This `make` recipe will compile the binary for your local architecture and place it under `$GOPATH/bin` via `go install`
-
-#### Building the CLI binaries from code
-
-Using `make` run
-
-```bash
-make compile-all
-```
-
-This `make` recipe will build the binaries for Linux, Mac and Windows under the `build` directory.
-
-### Uninstallation
-
-#### If installed using the first method (downloading the release)
-
-```bash
-sudo rm /usr/local/bin/infuse
-```
-
-#### If installed using go
-
-```bash
-rm $GOPATH/bin/infuse
 ```
 
 ## The template library
