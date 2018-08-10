@@ -241,7 +241,7 @@ volumes:
         "X": "chuck",
         "Y": "norris",
         "Z": 1234,
-        "something": [the value 'something' had in the original data input]
+        "something": "[the value for the 'something' key in the original data input]"
     }
     ```
 
