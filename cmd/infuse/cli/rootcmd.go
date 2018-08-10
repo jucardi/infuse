@@ -41,7 +41,7 @@ func Execute() {
 	rootCmd.Flags().StringP("url", "u", "", "INPUT: A URL to HTTP GET a JSON or YAML file from. Useful to parse data from config servers")
 	rootCmd.Flags().StringP("output", "o", "", "Set output file. If not specified, the resulting template will be printed to Stdout")
 	rootCmd.Flags().StringP("pattern", "p", "", "Uses a search pattern to load definition files to be used in the 'templates' directive.")
-	rootCmd.Flags().StringArrayP("definitions", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
+	rootCmd.Flags().StringArrayP("definition", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
 
 	rootCmd.Execute()
 }
@@ -68,7 +68,7 @@ func parse(cmd *cobra.Command, args []string) {
 	str, _ := cmd.Flags().GetString("string")
 	url, _ := cmd.Flags().GetString("url")
 	output, _ := cmd.Flags().GetString("output")
-	definitions, _ := cmd.Flags().GetStringArray("definitions")
+	definitions, _ := cmd.Flags().GetStringArray("definition")
 	pattern, _ := cmd.Flags().GetString("pattern")
 
 	request := parser.TemplateRequest{

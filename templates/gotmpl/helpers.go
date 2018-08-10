@@ -3,7 +3,6 @@ package gotmpl
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"text/template"
 
 	"github.com/jucardi/infuse/templates/helpers"
@@ -31,20 +30,13 @@ func getHelpers() template.FuncMap {
 func init() {
 	helpers.RegisterCommon(Helpers())
 	Helpers().Register("default", defaultFn)
-	Helpers().Register("template_file", templateFn)
 	Helpers().Register("map", mapFn)
 	Helpers().Register("dict", mapFn)
 	Helpers().Register("env", envFn)
 }
 
-func defaultFn(val interface{}) interface{} {
-	return val
-}
-
-// TODO
-func templateFn(arg0 reflect.Value, args ...reflect.Value) reflect.Value {
-	//log.Debug(arg0.Interface())
-	return arg0
+func defaultFn(val ...interface{}) interface{} {
+	return val[len(val)-1]
 }
 
 func mapFn(args ...interface{}) map[string]interface{} {
