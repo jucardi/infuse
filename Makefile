@@ -3,11 +3,10 @@ BUILD_TIME = $(shell date +%Y-%m-%dT%H:%M:%s)
 CMDROOT    = github.com/jucardi/infuse/cmd/infuse
 VERSION   ?= git.commit-$(shell git rev-parse HEAD).local
 
-vet:
-	@go vet ./...
+deps:
+	@go get ./...
 
-check:
-	$(GO_FMT)
+vet:
 	@go vet ./...
 
 format:
@@ -29,7 +28,7 @@ test: test-deps
 	@cat test-artifacts/gocov.json | gocov-xml > test-artifacts/coverage/coverage.xml
 	@cat test-artifacts/gocov.json | gocov-html > test-artifacts/coverage/coverage.html
 
-compile-all:
+compile-all: deps
 	@echo "compiling..."
 	@rm -rf build
 	@mkdir build
@@ -43,5 +42,5 @@ compile-all:
 	@GOOS=windows GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Windows-x86_64.exe ./cmd/infuse
 	@shasum -a 256 build/infuse-Windows-x86_64.exe >> build/infuse-Windows-x86_64.exe.sha256
 
-install:
+install: deps
 	@go install -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" ./cmd/infuse
