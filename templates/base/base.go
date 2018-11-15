@@ -22,9 +22,9 @@ func (t *AbstractTemplate) Name() string {
 	return t.NameStr
 }
 
-// ParseMarshalled parses the template using the string representation of a JSON or a YAML
-func (t *AbstractTemplate) ParseMarshalled(writer io.Writer, data []byte) error {
-	val, err := loader.LoadMarshalled(data)
+// ParseMarshaled parses the template using the string representation of a JSON or a YAML
+func (t *AbstractTemplate) ParseMarshaled(writer io.Writer, data []byte) error {
+	val, err := loader.LoadMarshaled(data)
 	if err != nil {
 		return fmt.Errorf("an error ocurred while unmarshalling the data, %v", err)
 	}

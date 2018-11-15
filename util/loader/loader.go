@@ -47,8 +47,8 @@ func LoadTemplate(filename string) (string, error) {
 	return string(bs), err
 }
 
-// LoadMarshalled attempts to unmarshall the byte data provided to a map[string]interface{}, first will try to unmarshall as JSON and if fails will attempt to unmarshall as YAML
-func LoadMarshalled(data []byte) (map[string]interface{}, error) {
+// LoadMarshaled attempts to unmarshal the byte data provided to a map[string]interface{}, first will try to unmarshal as JSON and if fails will attempt to unmarshall as YAML
+func LoadMarshaled(data []byte) (map[string]interface{}, error) {
 	ret, jsonErr := LoadJSON(data)
 	if jsonErr == nil {
 		return ret, nil

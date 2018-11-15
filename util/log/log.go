@@ -1,10 +1,9 @@
 package log
 
 import (
-	"os"
-
 	"github.com/jucardi/infuse/config"
 	"github.com/sirupsen/logrus"
+	"os"
 )
 
 // Debug logs a message at the debug level in the standard logrus logger

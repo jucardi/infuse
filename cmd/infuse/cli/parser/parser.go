@@ -134,7 +134,7 @@ func Parse(req TemplateRequest) error {
 	case "yml":
 		err = template.ParseYAML(writer, data)
 	default:
-		err = template.ParseMarshalled(writer, data)
+		err = template.ParseMarshaled(writer, data)
 	}
 
 	if err != nil {

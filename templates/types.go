@@ -38,8 +38,8 @@ type ITemplate interface {
 	// Type returns the template type of this instance.
 	Type() string
 
-	// ParseMarshalled attempts to unmarshall the byte data provided and parses the template.
-	ParseMarshalled(writer io.Writer, data []byte) error
+	// ParseMarshaled attempts to unmarshall the byte data provided and parses the template.
+	ParseMarshaled(writer io.Writer, data []byte) error
 
 	// ParseJSON attempts to unmarshall the byte data provided as a JSON object and parses the template.
 	ParseJSON(writer io.Writer, data []byte) error

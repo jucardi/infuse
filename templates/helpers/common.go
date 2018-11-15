@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/jucardi/infuse/util/log"
 	"gopkg.in/yaml.v2"
@@ -17,6 +18,7 @@ func RegisterCommon(manager IHelpersManager) {
 	manager.Register("lowercase", lowercaseFn)
 	manager.Register("br", bracketsFn)
 	manager.Register("yaml", toYMLString)
+	manager.Register("json", toJSONString)
 	manager.Register("rem", comment)
 }
 
@@ -49,6 +51,15 @@ func toYMLString(arg interface{}) string {
 	}
 	return string(result)
 }
+
+func toJSONString(arg interface{}) string {
+	result, err := json.Marshal(arg)
+	if err != nil {
+		log.Panicf("error occurred while converting object to YAML. %+v", err)
+	}
+	return string(result)
+}
+
 func comment(args ...interface{}) string {
 	return ""
 }

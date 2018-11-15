@@ -2,11 +2,9 @@ package templates
 
 import (
 	"errors"
-
+	"github.com/jucardi/infuse/config"
 	"github.com/jucardi/infuse/templates/gotmpl"
 	"github.com/jucardi/infuse/templates/handlebars"
-
-	"github.com/jucardi/infuse/config"
 )
 
 // ErrTypeNotFound is returned when the template type does not match a defined template implementation

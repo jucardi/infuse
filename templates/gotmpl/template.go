@@ -2,11 +2,10 @@ package gotmpl
 
 import (
 	"fmt"
+	"github.com/jucardi/infuse/templates/base"
+	"gopkg.in/jucardi/go-strings.v1/stringx"
 	"io"
 	"text/template"
-
-	"github.com/jucardi/go-strings/stringx"
-	"github.com/jucardi/infuse/templates/base"
 )
 
 // Template represents the implementation of ITemplate for Go templates

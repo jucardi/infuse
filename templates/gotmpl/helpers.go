@@ -2,11 +2,10 @@ package gotmpl
 
 import (
 	"fmt"
-	"os"
-	"text/template"
-
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
+	"os"
+	"text/template"
 )
 
 var instance helpers.IHelpersManager
