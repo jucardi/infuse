@@ -2,11 +2,19 @@ package gotmpl
 
 import (
 	"fmt"
+	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/templates/base"
 	"gopkg.in/jucardi/go-strings.v1/stringx"
 	"io"
 	"text/template"
 )
+
+// TypeGo is the type for Go templates.
+const TypeGo = "go"
+
+func init() {
+	templates.Factory().Register(TypeGo, func(name ...string) templates.ITemplate { return New(name...) })
+}
 
 // Template represents the implementation of ITemplate for Go templates
 type Template struct {

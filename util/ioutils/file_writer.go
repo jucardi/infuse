@@ -3,8 +3,6 @@ package ioutils
 import (
 	"io"
 	"os"
-
-	"github.com/jucardi/infuse/util/log"
 )
 
 type fileWriter struct {
@@ -13,7 +11,6 @@ type fileWriter struct {
 }
 
 func (w *fileWriter) Write(p []byte) (n int, err error) {
-	log.Debug("<--- ioutils.Write")
 	return w.file.Write(p)
 }
 

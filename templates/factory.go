@@ -3,8 +3,6 @@ package templates
 import (
 	"errors"
 	"github.com/jucardi/infuse/config"
-	"github.com/jucardi/infuse/templates/gotmpl"
-	"github.com/jucardi/infuse/templates/handlebars"
 )
 
 // ErrTypeNotFound is returned when the template type does not match a defined template implementation
@@ -30,8 +28,10 @@ func (f *factory) New(name ...string) ITemplate {
 	if t, err := f.Create(config.Get().DefaultType); err == nil {
 		return t
 	}
-	t, _ := f.Create(TypeGo)
-	return t
+	for _, ctor := range f.ctors {
+		return ctor(name...)
+	}
+	return nil
 }
 
 func (f *factory) Create(typeStr string, name ...string) (ITemplate, error) {
@@ -62,9 +62,4 @@ func (f *factory) GetAvaliableTypes() []string {
 func (f *factory) Contains(typeStr string) bool {
 	_, ok := f.ctors[typeStr]
 	return ok
-}
-
-func init() {
-	Factory().Register("go", func(name ...string) ITemplate { return gotmpl.New(name...) })
-	Factory().Register("handlebars", func(name ...string) ITemplate { return handlebars.New(name...) })
 }

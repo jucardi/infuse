@@ -1,12 +1,18 @@
 package handlebars
 
 import (
-	"io"
-
 	"github.com/aymerick/raymond"
+	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/templates/base"
 	"gopkg.in/jucardi/go-strings.v1/stringx"
+	"io"
 )
+// TypeHandlebars is the type for handlebars (mustache) templates
+const TypeHandlebars = "handlebars"
+
+func init() {
+	templates.Factory().Register(TypeHandlebars, func(name ...string) templates.ITemplate { return New(name...) })
+}
 
 // Template represents the implementation of ITemplate for handlebars (mustache) templates
 type Template struct {

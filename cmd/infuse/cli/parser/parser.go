@@ -1,18 +1,17 @@
 package parser
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"os"
-
-	"bytes"
+	"github.com/jucardi/go-logger-lib/log"
 	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/util/ioutils"
+	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
-	"github.com/jucardi/go-logger-lib/log"
 )
 
 // TemplateRequest encapsulates the required information to parse a template

@@ -4,14 +4,6 @@ import (
 	"io"
 )
 
-const (
-	// TypeGo is the type for Go templates.
-	TypeGo = "go"
-
-	// TypeHandlebars is the type for handlebars (mustache) templates
-	TypeHandlebars = "handlebars"
-)
-
 // IFactory represents the available functions of the templates factory
 type IFactory interface {
 	// New creates a new default template type, defined in the configuration. If the default template type is not found, returns the implementation of Go Templates.

@@ -24,6 +24,7 @@ func RegisterCommon(manager IHelpersManager) {
 
 /** String helpers */
 
+
 func stringFn(arg interface{}) string {
 	return fmt.Sprintf("%+v", arg)
 }

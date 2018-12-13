@@ -3,3 +3,6 @@
 test-artifacts
 build/
 tmp/
+
+.idea/
+.vscode/
