@@ -5,6 +5,7 @@ import (
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
 	"os"
+	"reflect"
 	"text/template"
 )
 
@@ -35,7 +36,29 @@ func init() {
 }
 
 func defaultFn(val ...interface{}) interface{} {
-	return val[len(val)-1]
+	for i := len(val) - 1; i > 0; i-- {
+		x := val[i]
+		v := reflect.ValueOf(x)
+
+		switch v.Kind() {
+		case reflect.String:
+			fallthrough
+		case reflect.Map:
+			fallthrough
+		case reflect.Slice:
+			fallthrough
+		case reflect.Array:
+			if v.Len() > 0 {
+				return x
+			}
+		default:
+			if reflect.Zero(v.Type()) != v {
+				return x
+			}
+		}
+
+	}
+	return val[0]
 }
 
 func mapFn(args ...interface{}) map[string]interface{} {
