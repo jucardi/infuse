@@ -52,7 +52,7 @@ func defaultFn(val ...interface{}) interface{} {
 				return x
 			}
 		default:
-			if reflect.Zero(v.Type()) != v {
+			if v.IsValid() {
 				return x
 			}
 		}
