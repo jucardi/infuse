@@ -18,6 +18,7 @@ type IHelpersManager interface {
 // Helper encapsulates the information of a template helper
 type Helper struct {
 	Name        string
+	Category    string
 	Description string
 	Function    interface{}
 }

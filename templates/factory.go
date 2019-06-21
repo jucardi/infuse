@@ -51,7 +51,7 @@ func (f *factory) Register(name string, constructor func(name ...string) ITempla
 	}
 }
 
-func (f *factory) GetAvaliableTypes() []string {
+func (f *factory) GetAvailableTypes() []string {
 	keys := make([]string, 0, len(f.ctors))
 	for k := range f.ctors {
 		keys = append(keys, k)

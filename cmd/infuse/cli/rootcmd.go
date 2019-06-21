@@ -2,6 +2,9 @@ package cli
 
 import (
 	"fmt"
+	"github.com/jucardi/infuse/templates"
+	"github.com/jucardi/infuse/templates/helpers"
+	"gopkg.in/jucardi/go-strings.v1/stringx"
 	"os"
 
 	"github.com/jucardi/infuse/cmd/infuse/cli/parser"
@@ -42,21 +45,29 @@ func Execute() {
 	rootCmd.Flags().StringP("output", "o", "", "Set output file. If not specified, the resulting template will be printed to Stdout")
 	rootCmd.Flags().StringP("pattern", "p", "", "Uses a search pattern to load definition files to be used in the 'templates' directive.")
 	rootCmd.Flags().StringArrayP("definition", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
+	rootCmd.Flags().BoolP("listHelpers", "l", false, "Lists all registered helpers")
 
-	rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		panic(err)
+	}
 }
 
 func printUsage(cmd *cobra.Command) {
 	cmd.Println(fmt.Sprintf(long, version.Version, version.Built))
-	cmd.Usage()
+	_ = cmd.Usage()
 }
 
-func initCmd(cmd *cobra.Command, args []string) {
+func initCmd(cmd *cobra.Command, _ []string) {
 	FromCommand(cmd)
 	cmd.Use = fmt.Sprintf(usage, cmd.Use)
 }
 
 func parse(cmd *cobra.Command, args []string) {
+	if listHelpers, _ := cmd.Flags().GetBool("listHelpers"); listHelpers {
+		printHelpers()
+		os.Exit(0)
+	}
+
 	if !validate(args) {
 		log.Error("Unexpected number of arguments")
 		printUsage(cmd)
@@ -90,4 +101,44 @@ func parse(cmd *cobra.Command, args []string) {
 
 func validate(args []string) bool {
 	return len(args) == 1
+}
+
+func printHelpers() {
+	println("Available helpers:")
+	for k, list := range helpersByCategory() {
+		maxLenght := 0
+		fmt.Printf("\n  %s\n", k)
+		for _, h := range list {
+			if len(h.Name) > maxLenght {
+				maxLenght = len(h.Name)
+			}
+		}
+		for _, h := range list {
+			if h.Description == "" {
+				fmt.Printf("   - %s\n", h.Name)
+			} else {
+				fmt.Printf("   - %s%s      > %s\n", h.Name, getSpaces(maxLenght-len(h.Name)), h.Description)
+			}
+		}
+	}
+	println()
+}
+
+func helpersByCategory() map[string][]*helpers.Helper {
+	template := templates.Factory().New()
+	ret := map[string][]*helpers.Helper{}
+
+	for _, h := range template.Helpers() {
+		list, _ := ret[h.Category]
+		list = append(list, h)
+		ret[h.Category] = list
+	}
+	return ret
+}
+func getSpaces(count int) string {
+	builder := stringx.Builder()
+	for i := 0; i < count; i++ {
+		builder.Append(" ")
+	}
+	return builder.Build()
 }

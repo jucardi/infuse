@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
-	"os"
 	"reflect"
 	"text/template"
 )
@@ -29,10 +28,9 @@ func getHelpers() template.FuncMap {
 
 func init() {
 	helpers.RegisterCommon(Helpers())
-	Helpers().Register("default", defaultFn)
-	Helpers().Register("map", mapFn)
-	Helpers().Register("dict", mapFn)
-	Helpers().Register("env", envFn)
+	_ = Helpers().Register("default", defaultFn, "The first argument should be a default value, and the second argument is a value that will be evaluated. If arg2 is a zero value, returns arg1, otherwise returns arg2")
+	_ = Helpers().Register("map", mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
+	_ = Helpers().Register("dict", mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
 }
 
 func defaultFn(val ...interface{}) interface{} {
@@ -73,8 +71,4 @@ func mapFn(args ...interface{}) map[string]interface{} {
 	}
 
 	return ret
-}
-
-func envFn(name string) string {
-	return os.Getenv(name)
 }

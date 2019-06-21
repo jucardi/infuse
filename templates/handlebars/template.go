@@ -4,9 +4,11 @@ import (
 	"github.com/aymerick/raymond"
 	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/templates/base"
+	"github.com/jucardi/infuse/templates/helpers"
 	"gopkg.in/jucardi/go-strings.v1/stringx"
 	"io"
 )
+
 // TypeHandlebars is the type for handlebars (mustache) templates
 const TypeHandlebars = "handlebars"
 
@@ -44,6 +46,10 @@ func (t *Template) LoadTemplate(tmpl string) error {
 func (t *Template) LoadDefinition(name, tmpl string) error {
 	t.Definitions[name] = tmpl
 	return nil
+}
+
+func (t *Template) Helpers() (ret []*helpers.Helper) {
+	return Helpers().Get()
 }
 
 // New creates a new template utility which extends the default built in functions for Go templates.

@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"github.com/jucardi/infuse/templates/helpers"
 	"io"
 )
 
@@ -15,8 +16,8 @@ type IFactory interface {
 	// Register registers a constructor for a template implementation.
 	Register(name string, constructor func(name ...string) ITemplate)
 
-	// GetAvaliableTypes returns the available type of template implementations
-	GetAvaliableTypes() []string
+	// GetAvailableTypes returns the available type of template implementations
+	GetAvailableTypes() []string
 
 	// Contains indicates whether an implementation of the given type is registered in the factory.
 	Contains(typeStr string) bool
@@ -56,6 +57,9 @@ type ITemplate interface {
 
 	// LoadDefinition loads the given template string as a definition to be used for 'template' directives.
 	LoadDefinition(name, tmpl string) error
+
+	// Helpers returns the list of helpers that have been registered to this template
+	Helpers() []*helpers.Helper
 }
 
 type baseTemplate struct {
