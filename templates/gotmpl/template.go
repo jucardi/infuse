@@ -30,7 +30,8 @@ func (t *Template) Type() string {
 // Parse parses the template
 func (t *Template) Parse(writer io.Writer, data interface{}) error {
 	str := t.prepare()
-	tmpl := template.New(t.NameStr).Funcs(getHelpers())
+	tmpl := template.New(t.NameStr).Funcs(getHelpers().toMap())
+	getHelpers().setTemplate(tmpl)
 	if _, err := tmpl.Parse(str); err != nil {
 		return err
 	}
@@ -60,6 +61,7 @@ func (t *Template) prepare() string {
 			continue
 		}
 		builder.
+			AppendLine().
 			AppendLinef("{{define \"%s\"}}", k).
 			AppendLine(v).
 			AppendLine("{{end}}")
@@ -89,7 +91,7 @@ func (t *Template) Helpers() (ret []*helpers.Helper) {
 		{Category: "Built-in Functions", Name: "urlquery", Description: "returns the escaped value of the textual representation of its arguments in a form suitable for embedding in a URL query."},
 	}
 
-	registered := Helpers().Get()
+	registered := getHelpers().Get()
 	for _, h := range registered {
 		h.Category = "Extensions"
 	}
@@ -111,7 +113,7 @@ func New(name ...string) *Template {
 }
 
 func validate(name, tmpl string, successFn func()) error {
-	_, err := template.New(name).Funcs(getHelpers()).Parse(tmpl)
+	_, err := template.New(name).Funcs(getHelpers().toMap()).Parse(tmpl)
 
 	if err != nil {
 		return fmt.Errorf("unable to load definition '%s', %v", name, err)

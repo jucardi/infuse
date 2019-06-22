@@ -32,6 +32,7 @@ func RegisterCommon(manager IHelpersManager) {
 	_ = manager.Register("json", toJSONString, "Marshals the provided object as JSON")
 	_ = manager.Register("rem", comment, "Helper to add comments")
 	_ = manager.Register("env", os.Getenv, "Returns the value set in the provided environment variable")
+	_ = manager.Register("stringArray", stringArray, "Creates an array of strings with the provided string args")
 }
 
 /** String helpers */
@@ -55,11 +56,15 @@ func toYMLString(arg interface{}) string {
 func toJSONString(arg interface{}) string {
 	result, err := json.Marshal(arg)
 	if err != nil {
-		log.Panicf("error occurred while converting object to YAML. %+v", err)
+		log.Panicf("error occurred while converting object to JSON. %+v", err)
 	}
 	return string(result)
 }
 
 func comment(_ ...interface{}) string {
 	return ""
+}
+
+func stringArray(args ...string) []string {
+	return args
 }

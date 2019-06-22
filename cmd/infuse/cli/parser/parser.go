@@ -1,24 +1,20 @@
 package parser
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/jucardi/go-logger-lib/log"
 	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/util/ioutils"
 	"io"
-	"io/ioutil"
-	"net/http"
 	"os"
-	"strings"
 )
 
 // TemplateRequest encapsulates the required information to parse a template
 type TemplateRequest struct {
 	Filename      string
 	String        string
-	InputFile     string
+	Files         []string
 	URL           string
 	Output        string
 	Definitions   []string
@@ -26,17 +22,7 @@ type TemplateRequest struct {
 }
 
 func (t TemplateRequest) validate() error {
-	count := 0
-	if t.InputFile != "" {
-		count++
-	}
-	if t.String != "" {
-		count++
-	}
-	if t.URL != "" {
-		count++
-	}
-	if count > 1 {
+	if len(t.Files) == 0 && t.String != "" && t.URL != "" {
 		return errors.New("only one input method allowed, specify either an input filename, a string or a URL")
 	}
 	if t.Filename == "" {
@@ -45,29 +31,27 @@ func (t TemplateRequest) validate() error {
 	return nil
 }
 
-func (t TemplateRequest) load() ([]byte, error) {
+func (t TemplateRequest) load() (Data, error) {
 	if err := t.validate(); err != nil {
 		return nil, err
 	}
 
-	if t.InputFile == "" && t.String == "" && t.URL == "" {
-		return []byte("{}"), nil
-	}
-	if t.InputFile != "" {
-		return ioutil.ReadFile(t.InputFile)
-	}
-	if t.URL != "" {
-		if resp, err := http.Get(t.URL); err != nil {
-			return nil, fmt.Errorf("error occurred while fetching from URL, %+v", err)
-		} else if resp.StatusCode < 200 || resp.StatusCode > 299 {
-			return nil, fmt.Errorf("unsuccessful response code (%d)", resp.StatusCode)
-		} else {
-			buf := new(bytes.Buffer)
-			buf.ReadFrom(resp.Body)
-			return buf.Bytes(), nil
+	dataObj := Data{}
+
+	if len(t.Files) > 0 {
+		for _, file := range t.Files {
+			if err := dataObj.LoadFile(file); err != nil {
+				return nil, err
+			}
 		}
 	}
-	return []byte(t.String), nil
+
+	if t.URL != "" {
+		if err := dataObj.LoadURL(t.URL); err != nil {
+			return nil, err
+		}
+	}
+	return dataObj, nil
 }
 
 // Parse parses the given template with the given information
@@ -113,30 +97,7 @@ func Parse(req TemplateRequest) error {
 		writer = os.Stdout
 	}
 
-	filename := ""
-
-	if req.Filename != "" {
-		filename = req.Filename
-	} else if req.URL != "" {
-		filename = req.URL
-	}
-
-	split := strings.Split(strings.ToLower(filename), ".")
-	fileType := split[len(split)-1]
-
-	// Parse
-	switch fileType {
-	case "json":
-		err = template.ParseJSON(writer, data)
-	case "yaml":
-		fallthrough
-	case "yml":
-		err = template.ParseYAML(writer, data)
-	default:
-		err = template.ParseMarshaled(writer, data)
-	}
-
-	if err != nil {
+	if err := template.Parse(writer, data.ToMap()); err != nil {
 		return fmt.Errorf("failed to parse the template, %v", err)
 	}
 

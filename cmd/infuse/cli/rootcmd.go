@@ -39,7 +39,7 @@ var rootCmd = &cobra.Command{
 
 // Execute starts the execution of the parse command.
 func Execute() {
-	rootCmd.Flags().StringP("file", "f", "", "INPUT: A JSON or YAML file to use as an input for the data to be parsed")
+	rootCmd.Flags().StringArrayP("file", "f", nil, "INPUT: A JSON or YAML file to use as an input for the data to be parsed")
 	rootCmd.Flags().StringP("string", "s", "", "INPUT: A JSON or YAML string representation")
 	rootCmd.Flags().StringP("url", "u", "", "INPUT: A URL to HTTP GET a JSON or YAML file from. Useful to parse data from config servers")
 	rootCmd.Flags().StringP("output", "o", "", "Set output file. If not specified, the resulting template will be printed to Stdout")
@@ -75,7 +75,7 @@ func parse(cmd *cobra.Command, args []string) {
 	}
 
 	filename := args[0]
-	input, _ := cmd.Flags().GetString("file")
+	input, _ := cmd.Flags().GetStringArray("file")
 	str, _ := cmd.Flags().GetString("string")
 	url, _ := cmd.Flags().GetString("url")
 	output, _ := cmd.Flags().GetString("output")
@@ -86,7 +86,7 @@ func parse(cmd *cobra.Command, args []string) {
 		Filename:      filename,
 		String:        str,
 		URL:           url,
-		InputFile:     input,
+		Files:         input,
 		Definitions:   definitions,
 		SearchPattern: pattern,
 		Output:        output,

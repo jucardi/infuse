@@ -2,38 +2,54 @@ package gotmpl
 
 import (
 	"fmt"
+	"github.com/jucardi/go-osx/paths"
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
+	"io/ioutil"
+	"os"
 	"reflect"
 	"text/template"
 )
 
-var instance helpers.IHelpersManager
+var instance *helperContext
 
-// Helpers returns the singleton helpers instance used for Go templates
-func Helpers() helpers.IHelpersManager {
+func getHelpers() *helperContext {
 	if instance == nil {
-		instance = helpers.New()
+		instance = &helperContext{
+			IHelpersManager: helpers.New(),
+		}
+		instance.init()
 	}
 	return instance
 }
 
-func getHelpers() template.FuncMap {
+type helperContext struct {
+	helpers.IHelpersManager
+	*template.Template
+}
+
+func (h *helperContext) setTemplate(tmpl *template.Template) {
+	h.Template = tmpl
+}
+
+func (h *helperContext) toMap() template.FuncMap {
 	ret := template.FuncMap{}
-	for _, v := range Helpers().Get() {
+	for _, v := range h.Get() {
 		ret[v.Name] = v.Function
 	}
 	return ret
 }
 
-func init() {
-	helpers.RegisterCommon(Helpers())
-	_ = Helpers().Register("default", defaultFn, "The first argument should be a default value, and the second argument is a value that will be evaluated. If arg2 is a zero value, returns arg1, otherwise returns arg2")
-	_ = Helpers().Register("map", mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
-	_ = Helpers().Register("dict", mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
+func (h *helperContext) init() {
+	helpers.RegisterCommon(h)
+	_ = h.Register("default", h.defaultFn, "The first argument should be a default value, and the second argument is a value that will be evaluated. If arg2 is a zero value, returns arg1, otherwise returns arg2")
+	_ = h.Register("map", h.mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
+	_ = h.Register("dict", h.mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
+	_ = h.Register("include", h.includeFile, "Includes a template file as an internal template reference by the provided name")
+	_ = h.Register("set", h.setFn, "Allows to set a value to a map[string]interface{}")
 }
 
-func defaultFn(val ...interface{}) interface{} {
+func (h *helperContext) defaultFn(val ...interface{}) interface{} {
 	for i := len(val) - 1; i > 0; i-- {
 		x := val[i]
 		v := reflect.ValueOf(x)
@@ -59,7 +75,7 @@ func defaultFn(val ...interface{}) interface{} {
 	return val[0]
 }
 
-func mapFn(args ...interface{}) map[string]interface{} {
+func (h *helperContext) mapFn(args ...interface{}) map[string]interface{} {
 	if len(args)%2 != 0 {
 		log.Panicf("Error in 'map' directive. The number of keys do not match the number of values")
 	}
@@ -71,4 +87,27 @@ func mapFn(args ...interface{}) map[string]interface{} {
 	}
 
 	return ret
+}
+
+func (h *helperContext) includeFile(name, file string) (string, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("error getting work directory %s", err.Error())
+	}
+	templateData, err := ioutil.ReadFile(paths.Combine(wd, file))
+	if err != nil {
+		return "", fmt.Errorf("error including template file %s, %s", file, err.Error())
+	}
+	tmpl, err := h.Template.New(name).Parse(string(templateData))
+	if err != nil {
+		return "", fmt.Errorf("error parsing template file %s, %s", file, err.Error())
+	}
+	h.Template = tmpl
+	return "", nil
+}
+
+func (h *helperContext) setFn(obj interface{}, key string, value interface{}) string {
+	m := obj.(map[string]interface{})
+	m[key] = value
+	return ""
 }
