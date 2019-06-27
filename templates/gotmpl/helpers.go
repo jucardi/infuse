@@ -5,6 +5,7 @@ import (
 	"github.com/jucardi/go-osx/paths"
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
+	"gopkg.in/jucardi/go-streams.v1/streams"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -47,6 +48,7 @@ func (h *helperContext) init() {
 	_ = h.Register("dict", h.mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
 	_ = h.Register("include", h.includeFile, "Includes a template file as an internal template reference by the provided name")
 	_ = h.Register("set", h.setFn, "Allows to set a value to a map[string]interface{}")
+	_ = h.Register("append", h.append, "Appends a value into an existing array")
 }
 
 func (h *helperContext) defaultFn(val ...interface{}) interface{} {
@@ -110,4 +112,13 @@ func (h *helperContext) setFn(obj interface{}, key string, value interface{}) st
 	m := obj.(map[string]interface{})
 	m[key] = value
 	return ""
+}
+
+func (h *helperContext) append(array interface{}, values ...interface{}) interface{} {
+	vals := streams.From(values).
+		Map(func(i interface{}) interface{} {
+			return reflect.ValueOf(i)
+		}).
+		ToArray().([]reflect.Value)
+	return reflect.Append(reflect.ValueOf(array), vals...).Interface()
 }
