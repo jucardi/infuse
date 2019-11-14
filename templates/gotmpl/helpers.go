@@ -49,7 +49,7 @@ func (h *helperContext) init() {
 	_ = h.Register("include", h.includeFile, "Includes a template file as an internal template reference by the provided name")
 	_ = h.Register("set", h.setFn, "Allows to set a value to a map[string]interface{}")
 	_ = h.Register("append", h.append, "Appends a value into an existing array")
-	_ = h.Register("iterate", h.iterate, "Creates an iteration array of the provided length, so it can be used as {{ range $val := iterate N }} where N is the length of the iteration. Created due to the lack of `for` loops")
+	_ = h.Register("iterate", h.iterate, "Creates an iteration array of the provided length, so it can be used as {{ range $val := iterate N }} where N is the length of the iteration. Created due to the lack of `for` loops.")
 }
 
 func (h *helperContext) defaultFn(val ...interface{}) interface{} {
