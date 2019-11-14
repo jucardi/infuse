@@ -49,6 +49,7 @@ func (h *helperContext) init() {
 	_ = h.Register("include", h.includeFile, "Includes a template file as an internal template reference by the provided name")
 	_ = h.Register("set", h.setFn, "Allows to set a value to a map[string]interface{}")
 	_ = h.Register("append", h.append, "Appends a value into an existing array")
+	_ = h.Register("iterate", h.iterate, "Creates an iteration array of the provided length, so it can be used as {{ range $val := iterate N }} where N is the length of the iteration. Created due to the lack of `for` loops")
 }
 
 func (h *helperContext) defaultFn(val ...interface{}) interface{} {
@@ -121,4 +122,12 @@ func (h *helperContext) append(array interface{}, values ...interface{}) interfa
 		}).
 		ToArray().([]reflect.Value)
 	return reflect.Append(reflect.ValueOf(array), vals...).Interface()
+}
+
+func (h *helperContext) iterate(count int) []int {
+	var array []int
+	for i := 0; i < count; i++ {
+		array = append(array, i)
+	}
+	return array
 }
