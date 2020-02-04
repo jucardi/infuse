@@ -33,6 +33,9 @@ func RegisterCommon(manager IHelpersManager) {
 	_ = manager.Register("rem", comment, "Helper to add comments")
 	_ = manager.Register("env", os.Getenv, "Returns the value set in the provided environment variable")
 	_ = manager.Register("stringArray", stringArray, "Creates an array of strings with the provided string args")
+	_ = manager.Register("mathAdd", mathAdd, "Adds all the provided numbers together and returns the result")
+	_ = manager.Register("mathMult", mathMult, "Multiplies all the provided numbers together and returns the result")
+	_ = manager.Register("indent", indent, "Indents a given string using the provided indentation")
 }
 
 /** String helpers */
@@ -67,4 +70,27 @@ func comment(_ ...interface{}) string {
 
 func stringArray(args ...string) []string {
 	return args
+}
+
+func mathAdd(nums ...int) int {
+	ret := 0
+	for _, n := range nums {
+		ret += n
+	}
+	return ret
+}
+
+func mathMult(nums ...int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	ret := 1
+	for _, n := range nums {
+		ret *= n
+	}
+	return ret
+}
+
+func indent(str string, indent string) string {
+	return strings.Replace(str, "\n", indent+"\n", -1)
 }

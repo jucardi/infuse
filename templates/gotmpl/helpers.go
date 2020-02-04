@@ -1,6 +1,7 @@
 package gotmpl
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/jucardi/go-osx/paths"
 	"github.com/jucardi/infuse/templates/helpers"
@@ -50,6 +51,7 @@ func (h *helperContext) init() {
 	_ = h.Register("set", h.setFn, "Allows to set a value to a map[string]interface{}")
 	_ = h.Register("append", h.append, "Appends a value into an existing array")
 	_ = h.Register("iterate", h.iterate, "Creates an iteration array of the provided length, so it can be used as {{ range $val := iterate N }} where N is the length of the iteration. Created due to the lack of `for` loops.")
+	_ = h.Register("loadJson", h.loadJson, "Unmarshals a JSON string into a map[string]interface{}")
 }
 
 func (h *helperContext) defaultFn(val ...interface{}) interface{} {
@@ -130,4 +132,12 @@ func (h *helperContext) iterate(count int) []int {
 		array = append(array, i)
 	}
 	return array
+}
+
+func (h *helperContext) loadJson(str string) map[string]interface{} {
+	ret := map[string]interface{}{}
+	if err := json.Unmarshal([]byte(str), &ret); err != nil {
+		panic(err.Error())
+	}
+	return ret
 }
