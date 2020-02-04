@@ -92,5 +92,5 @@ func mathMult(nums ...int) int {
 }
 
 func indent(str string, indent string) string {
-	return strings.Replace(str, "\n", indent+"\n", -1)
+	return strings.Replace(str, "\n", "\n"+indent, -1)
 }
