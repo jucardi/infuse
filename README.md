@@ -26,7 +26,7 @@ There are a few options to install the CLI tool.
 1) Download the binary
 
     ```bash
-    sudo curl -L https://github.com/jucardi/infuse/releases/download/v1.0.4/infuse-$(uname -s)-$(uname -m) -o /usr/local/bin/infuse
+    sudo curl -L https://github.com/jucardi/infuse/releases/download/v1.0.5/infuse-$(uname -s)-$(uname -m) -o /usr/local/bin/infuse
     ```
 
 2) Apply executable permissions
