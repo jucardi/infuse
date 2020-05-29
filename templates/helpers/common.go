@@ -3,10 +3,13 @@ package helpers
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"reflect"
+	"strings"
+
+	"github.com/jucardi/go-streams/streams"
 	"github.com/jucardi/infuse/util/log"
 	"gopkg.in/yaml.v2"
-	"os"
-	"strings"
 )
 
 /** In this file are defined the generic helpers that may work for different template types. */
@@ -19,7 +22,7 @@ func RegisterCommon(manager IHelpersManager) {
 	_ = manager.Register("lowercase", strings.ToLower, "Returns a copy of the string s with all Unicode letters mapped to their lower case.")
 	_ = manager.Register("title", strings.ToTitle, "Returns a copy of the string s with all Unicode letters mapped to their title case.")
 	_ = manager.Register("stringsReplace", strings.Replace, "Returns a copy of the string s with the first n non-overlapping instances of old replaced by new.")
-	_ = manager.Register("stringsJoin", strings.Join, "Concatenates the elements of a to create a single string. The separator string sep is placed between elements in the resulting string.")
+	_ = manager.Register("stringsJoin", stringsJoin, "Concatenates the elements of a to create a single string. The separator string sep is placed between elements in the resulting string.")
 	_ = manager.Register("stringsSplit", strings.Split, "Slices s into all substrings separated by sep and returns a slice of the substrings between those separators.")
 	_ = manager.Register("stringsTrim", strings.Trim, "Returns a slice of the string s with all leading and trailing Unicode code points contained in cutset removed.")
 	_ = manager.Register("stringsTrimLeft", strings.TrimLeft, "Returns a slice of the string s with all leading Unicode code points contained in cutset removed.")
@@ -39,6 +42,23 @@ func RegisterCommon(manager IHelpersManager) {
 }
 
 /** String helpers */
+
+func stringsJoin(array interface{}, sep string) string {
+	if kind := reflect.TypeOf(array).Kind(); kind != reflect.Array && kind != reflect.Slice {
+		log.Panic("the first argument must be a valid array", kind.String())
+	}
+	val := reflect.ValueOf(array)
+	if !val.IsValid() {
+		return ""
+	}
+	arr := streams.From(array).Map(func(i interface{}) interface{} {
+		if str, ok := i.(string); ok {
+			return str
+		}
+		return fmt.Sprint(i)
+	}).ToArray().([]string)
+	return strings.Join(arr, sep)
+}
 
 func stringFn(arg interface{}) string {
 	return fmt.Sprintf("%+v", arg)
