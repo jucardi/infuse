@@ -2,10 +2,13 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/templates/helpers"
+	"gopkg.in/jucardi/go-streams.v1/streams"
 	"gopkg.in/jucardi/go-strings.v1/stringx"
-	"os"
 
 	"github.com/jucardi/infuse/cmd/infuse/cli/parser"
 	"github.com/jucardi/infuse/cmd/infuse/version"
@@ -132,6 +135,17 @@ func helpersByCategory() map[string][]*helpers.Helper {
 		list, _ := ret[h.Category]
 		list = append(list, h)
 		ret[h.Category] = list
+	}
+	for cat, list := range ret {
+		ret[cat] = streams.
+			From(list).
+			OrderBy(func(i interface{}, j interface{}) int {
+				x := i.(*helpers.Helper)
+				y := j.(*helpers.Helper)
+
+				return strings.Compare(x.Name, y.Name)
+			}).
+			ToArray().([]*helpers.Helper)
 	}
 	return ret
 }

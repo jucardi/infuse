@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jucardi/go-streams/streams"
+	"github.com/jucardi/go-strings/stringx"
 	"github.com/jucardi/infuse/util/log"
 	"gopkg.in/yaml.v2"
 )
@@ -19,8 +20,10 @@ func RegisterCommon(manager IHelpersManager) {
 	_ = manager.Register("string", stringFn, "Prints a string representation of the provided object")
 	_ = manager.Register("format", fmt.Sprintf, "Formats according to a format specifier and returns the resulting string.")
 	_ = manager.Register("uppercase", strings.ToUpper, "Returns a copy of the string s with all Unicode letters mapped to their upper case.")
+	_ = manager.Register("upper", strings.ToUpper, "Returns a copy of the string s with all Unicode letters mapped to their upper case.")
 	_ = manager.Register("lowercase", strings.ToLower, "Returns a copy of the string s with all Unicode letters mapped to their lower case.")
-	_ = manager.Register("title", strings.ToTitle, "Returns a copy of the string s with all Unicode letters mapped to their title case.")
+	_ = manager.Register("lower", strings.ToLower, "Returns a copy of the string s with all Unicode letters mapped to their lower case.")
+	_ = manager.Register("title", stringx.ToTitle, "Returns a copy of the string s with all Unicode letters mapped to their title case.")
 	_ = manager.Register("stringsReplace", strings.Replace, "Returns a copy of the string s with the first n non-overlapping instances of old replaced by new.")
 	_ = manager.Register("stringsJoin", stringsJoin, "Concatenates the elements of a to create a single string. The separator string sep is placed between elements in the resulting string.")
 	_ = manager.Register("stringsSplit", strings.Split, "Slices s into all substrings separated by sep and returns a slice of the substrings between those separators.")
@@ -39,6 +42,14 @@ func RegisterCommon(manager IHelpersManager) {
 	_ = manager.Register("mathAdd", mathAdd, "Adds all the provided numbers together and returns the result")
 	_ = manager.Register("mathMult", mathMult, "Multiplies all the provided numbers together and returns the result")
 	_ = manager.Register("indent", indent, "Indents a given string using the provided indentation")
+	_ = manager.Register("stringxCamelToDash", stringx.CamelToDash, "Converts a camelCase string to a dash-separated string")
+	_ = manager.Register("stringxCamelToSnake", stringx.CamelToSnake, "Converts a camelCase string to a snake_case string")
+	_ = manager.Register("stringxDashToCamel", stringx.DashToCamel, "Converts a dash-separated string to a camelCase string")
+	_ = manager.Register("stringxSnakeToCamel", stringx.SnakeToCamel, "Converts a SnakeToCamel string to a camelCase string")
+	_ = manager.Register("stringxPascalToDash", stringx.PascalToDash, "Converts a PascalCase string to a dash-separated string")
+	_ = manager.Register("stringxPascalToSnake", stringx.PascalToSnake, "Converts a PascalCase string to a snake_case string")
+	_ = manager.Register("stringxDashToPascal", stringx.DashToPascal, "Converts a dash-separated string to a PascalCase string")
+	_ = manager.Register("stringxSnakeToPascal", stringx.SnakeToPascal, "Converts a SnakeToCamel string to a PascalCase string")
 }
 
 /** String helpers */

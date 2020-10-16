@@ -24,7 +24,7 @@ func (d Data) LoadContents(contents []byte, file string) error {
 
 	switch ext {
 	case "json":
-		err = json.Unmarshal(contents, val)
+		err = json.Unmarshal(contents, &val)
 	case "yml":
 		fallthrough
 	case "yaml":
