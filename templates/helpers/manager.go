@@ -3,7 +3,7 @@ package helpers
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/jucardi/go-strings.v1/stringx"
+	"github.com/jucardi/go-strings/stringx"
 	"reflect"
 )
 

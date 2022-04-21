@@ -2,10 +2,10 @@ package gotmpl
 
 import (
 	"fmt"
+	"github.com/jucardi/go-strings/stringx"
 	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/templates/base"
 	"github.com/jucardi/infuse/templates/helpers"
-	"gopkg.in/jucardi/go-strings.v1/stringx"
 	"io"
 	"text/template"
 )

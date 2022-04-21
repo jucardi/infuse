@@ -12,35 +12,25 @@ vet:
 format:
 	$(GO_FMT)
 
-test-deps:
-	@echo "installing test dependencies..."
-	@go get github.com/stretchr/testify/assert
-	@go get github.com/smartystreets/goconvey/convey
-	@go get github.com/axw/gocov/...
-	@go get github.com/AlekSi/gocov-xml
-	@go get gopkg.in/matm/v1/gocov-html
-
-test: test-deps
+test:
 	@echo "running test coverage..."
 	@mkdir -p test-artifacts/coverage
-	@gocov test ./... -v > test-artifacts/gocov.json
-	@cat test-artifacts/gocov.json | gocov report
-	@cat test-artifacts/gocov.json | gocov-xml > test-artifacts/coverage/coverage.xml
-	@cat test-artifacts/gocov.json | gocov-html > test-artifacts/coverage/coverage.html
+	@go test -mod=vendor ./... -v -coverprofile test-artifacts/cover.out
+	@go tool cover -func test-artifacts/cover.out
 
 compile-all: deps
 	@echo "compiling..."
 	@rm -rf build
 	@mkdir build
 	@echo "building linux binary..."
-	@GOOS=linux GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Linux-x86_64 ./cmd/infuse
+	@GOOS=linux GOARCH=amd64 go build -mod=vendor -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Linux-x86_64 ./cmd/infuse
 	@shasum -a 256 build/infuse-Linux-x86_64 >> build/infuse-Linux-x86_64.sha256
 	@echo "building macosx binary..."
-	@GOOS=darwin GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Darwin-x86_64 ./cmd/infuse
+	@GOOS=darwin GOARCH=amd64 go build -mod=vendor -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Darwin-x86_64 ./cmd/infuse
 	@shasum -a 256 build/infuse-Darwin-x86_64 >> build/infuse-Darwin-x86_64.sha256
 	@echo "building windows binary..."
-	@GOOS=windows GOARCH=amd64 go build -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Windows-x86_64.exe ./cmd/infuse
+	@GOOS=windows GOARCH=amd64 go build -mod=vendor -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" -o build/infuse-Windows-x86_64.exe ./cmd/infuse
 	@shasum -a 256 build/infuse-Windows-x86_64.exe >> build/infuse-Windows-x86_64.exe.sha256
 
-install: deps
-	@go install -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" ./cmd/infuse
+install:
+	@go install -mod=vendor -ldflags "-X $(CMDROOT)/version.Version=$(VERSION) -X $(CMDROOT)/version.Built=$(BUILD_TIME)" ./cmd/infuse

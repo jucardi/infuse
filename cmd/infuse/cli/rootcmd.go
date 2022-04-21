@@ -5,13 +5,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jucardi/infuse/templates"
-	"github.com/jucardi/infuse/templates/helpers"
-	"gopkg.in/jucardi/go-streams.v1/streams"
-	"gopkg.in/jucardi/go-strings.v1/stringx"
-
+	"github.com/jucardi/go-streams/streams"
+	"github.com/jucardi/go-strings/stringx"
 	"github.com/jucardi/infuse/cmd/infuse/cli/parser"
 	"github.com/jucardi/infuse/cmd/infuse/version"
+	"github.com/jucardi/infuse/templates"
+	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
 	"github.com/spf13/cobra"
 )
@@ -49,6 +48,7 @@ func Execute() {
 	rootCmd.Flags().StringP("pattern", "p", "", "Uses a search pattern to load definition files to be used in the 'templates' directive.")
 	rootCmd.Flags().StringArrayP("definition", "d", []string{}, "Other templates to be loaded to be used in the 'templates' directive.")
 	rootCmd.Flags().BoolP("listHelpers", "l", false, "Lists all registered helpers")
+	rootCmd.Flags().Bool("ignoreErrors", false, "Ignores errors and continues parsing. Only applies for directories")
 
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
@@ -84,15 +84,17 @@ func parse(cmd *cobra.Command, args []string) {
 	output, _ := cmd.Flags().GetString("output")
 	definitions, _ := cmd.Flags().GetStringArray("definition")
 	pattern, _ := cmd.Flags().GetString("pattern")
+	ignoreErr, _ := cmd.Flags().GetBool("ignoreErrors")
 
 	request := parser.TemplateRequest{
-		Filename:      filename,
-		String:        str,
-		URL:           url,
-		Files:         input,
-		Definitions:   definitions,
-		SearchPattern: pattern,
-		Output:        output,
+		Path:            filename,
+		String:          str,
+		URL:             url,
+		Files:           input,
+		Definitions:     definitions,
+		SearchPattern:   pattern,
+		Output:          output,
+		ContinueOnError: ignoreErr,
 	}
 
 	if err := parser.Parse(request); err != nil {
