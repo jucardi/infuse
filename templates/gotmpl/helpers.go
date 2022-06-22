@@ -3,12 +3,10 @@ package gotmpl
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jucardi/go-osx/paths"
 	"github.com/jucardi/go-streams/streams"
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
 	"io/ioutil"
-	"os"
 	"reflect"
 	"text/template"
 )
@@ -95,11 +93,7 @@ func (h *helperContext) mapFn(args ...interface{}) map[string]interface{} {
 }
 
 func (h *helperContext) includeFile(name, file string) (string, error) {
-	wd, err := os.Getwd()
-	if err != nil {
-		return "", fmt.Errorf("error getting work directory %s", err.Error())
-	}
-	templateData, err := ioutil.ReadFile(paths.Combine(wd, file))
+	templateData, err := ioutil.ReadFile(file)
 	if err != nil {
 		return "", fmt.Errorf("error including template file %s, %s", file, err.Error())
 	}
