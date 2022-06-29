@@ -31,6 +31,8 @@ func RegisterCommon(manager IHelpersManager) {
 	_ = manager.Register("stringsTrimLeft", strings.TrimLeft, "Returns a slice of the string s with all leading Unicode code points contained in cutset removed.")
 	_ = manager.Register("stringsTrimRight", strings.TrimRight, "Returns a slice of the string s, with all trailing Unicode code points contained in cutset removed.")
 	_ = manager.Register("stringsTrimSpace", strings.TrimSpace, "Returns a slice of the string s, with all leading and trailing white space removed, as defined by Unicode.")
+	_ = manager.Register("stringsContains", strings.Contains, "Returns a boolean indicating whether the string s contains substr.")
+	_ = manager.Register("stringsCompare", strings.Compare, "Returns an integer comparing two strings lexicographically.")
 	_ = manager.Register("startsWith", strings.HasPrefix, "Returns a boolean indicating whether the string s begins with prefix.")
 	_ = manager.Register("endsWith", strings.HasSuffix, "Returns a boolean indicating whether the string s ends with suffix.")
 	_ = manager.Register("br", bracketsFn, "Wraps the contents into double brackets {{ }}")
