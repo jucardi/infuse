@@ -3,12 +3,13 @@ package gotmpl
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jucardi/go-streams/streams"
-	"github.com/jucardi/infuse/templates/helpers"
-	"github.com/jucardi/infuse/util/log"
 	"io/ioutil"
 	"reflect"
 	"text/template"
+
+	"github.com/jucardi/go-streams/streams"
+	"github.com/jucardi/infuse/templates/helpers"
+	"github.com/jucardi/infuse/util/log"
 )
 
 var instance *helperContext
@@ -106,8 +107,13 @@ func (h *helperContext) includeFile(name, file string) (string, error) {
 }
 
 func (h *helperContext) setFn(obj interface{}, key string, value interface{}) string {
-	m := obj.(map[string]interface{})
-	m[key] = value
+	switch m := obj.(type) {
+	case map[string]interface{}:
+		m[key] = value
+	case map[interface{}]interface{}:
+		m[key] = value
+	}
+
 	return ""
 }
 
