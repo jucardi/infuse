@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"reflect"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 var zeroVal = reflect.Value{}
