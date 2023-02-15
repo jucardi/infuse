@@ -86,12 +86,24 @@ func bracketsFn(arg interface{}) string {
 	return fmt.Sprintf("{{%+v}}", arg)
 }
 
-func toYMLString(arg interface{}) string {
+func toYMLString(arg interface{}, indent ...int) string {
 	result, err := yaml.Marshal(arg)
 	if err != nil {
 		log.Panicf("error occurred while converting object to YAML. %+v", err)
 	}
-	return string(result)
+	ret := string(result)
+	if len(indent) > 0 {
+		ind := ""
+		for i := 0; i < indent[0]; i++ {
+			ind = ind + " "
+		}
+		split := strings.Split(ret, "\n")
+		for i := 0; i < len(split); i++ {
+			split[i] = ind + split[i]
+		}
+		ret = strings.Join(split, "\n")
+	}
+	return ret
 }
 
 func toJSONString(arg interface{}) string {

@@ -1,7 +1,9 @@
 package gotmpl
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"reflect"
@@ -11,6 +13,7 @@ import (
 	"github.com/jucardi/infuse/templates/helpers"
 	"github.com/jucardi/infuse/util/log"
 	"github.com/jucardi/infuse/util/maps"
+	"github.com/jucardi/infuse/util/reflectx"
 )
 
 var instance *helperContext
@@ -28,6 +31,7 @@ func getHelpers() *helperContext {
 type helperContext struct {
 	helpers.IHelpersManager
 	*template.Template
+	loaded map[string]*template.Template
 }
 
 func (h *helperContext) setTemplate(tmpl *template.Template) {
@@ -48,6 +52,7 @@ func (h *helperContext) init() {
 	_ = h.Register("map", h.mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
 	_ = h.Register("dict", h.mapFn, "Creates a new map[string]interface{}, the provided arguments should be key, value, key, value...")
 	_ = h.Register("include", h.includeFile, "Includes a template file as an internal template reference by the provided name")
+	_ = h.Register("includeAsString", h.includeTemplate, "Includes a provided template string as an internal template reference by the provided name. Eg: {{ include [name] [contents] }}")
 	_ = h.Register("set", h.setFn, "Allows to set a value to a map[string]interface{} or map[interface{}]interface{}")
 	_ = h.Register("append", h.append, "Appends a value into an existing array")
 	_ = h.Register("iterate", h.iterate, "Creates an iteration array of the provided length, so it can be used as {{ range $val := iterate N }} where N is the length of the iteration. Created due to the lack of `for` loops.")
@@ -56,6 +61,10 @@ func (h *helperContext) init() {
 	_ = h.Register("mapGet", h.mapGetFn, `Allows to get a value from a map using an XPATH representation of the key. Accepts optional argument for a default value to return if the value is not found". E.g: {{mapGet $map ".some.key.path" $someDefaultValue }}`)
 	_ = h.Register("mapContains", h.mapContainsFn, `Indicates whether a value at the provided XPATH representation of the key exists in the provided map`)
 	_ = h.Register("mapConvert", h.mapConvertFn, `Ensures the provided map is map[string]interface{}. Useful when loading values from a YAML where the deserialization is map[interface{}]interface{}`)
+	_ = h.Register("invoke", h.invoke, `Similar to {{ template [name] [data] }}, invokes a name by the given name with the given data. The difference with 'template' is that 'invoke' can be used with a string value as the name instead of a hardcoded string`)
+	_ = h.Register("parse", h.parse, `Attempts to parse the provided template contents using the provided data object and returns the parsed value. Usage {{ parse [obj] [template contents] }}`)
+	_ = h.Register("parseXpath", h.parseXpath, `Attempts to parse a value inside a data object as a template and returns the parsed value using the same entry object to parse the template. Usage {{ parse [obj] [xpath to value with template] }}`)
+	_ = h.Register("in", h.in, `Indicates whether a value is contained in an array. Usage:  {{ in [array] [value] }}`)
 }
 
 func (h *helperContext) mapSetFn(obj interface{}, key string, value interface{}, makeEmpty ...bool) string {
@@ -188,6 +197,15 @@ func (h *helperContext) includeFile(name, file string) (string, error) {
 	return "", nil
 }
 
+func (h *helperContext) includeTemplate(name, contents string) (string, error) {
+	tmpl, err := h.Template.New(name).Parse(contents)
+	if err != nil {
+		return "", fmt.Errorf("error parsing template by name %s, %s", name, err.Error())
+	}
+	h.Template = tmpl
+	return "", nil
+}
+
 func (h *helperContext) setFn(obj interface{}, key string, value interface{}) string {
 	switch m := obj.(type) {
 	case map[string]interface{}:
@@ -222,4 +240,57 @@ func (h *helperContext) loadJson(str string) map[string]interface{} {
 		panic(err.Error())
 	}
 	return ret
+}
+
+func (h *helperContext) invoke(name string, data interface{}) (string, error) {
+	tmpl := h.Template.Lookup(name)
+	if tmpl == nil {
+		return "", fmt.Errorf("failed to invoke template '%s', not found", name)
+	}
+	buf := &bytes.Buffer{}
+	err := tmpl.Execute(buf, data)
+	return buf.String(), err
+}
+
+func (h *helperContext) parse(data interface{}, templateData string, failOnEmptyResult ...bool) (string, error) {
+	if templateData == "" {
+		if len(failOnEmptyResult) > 0 && failOnEmptyResult[0] {
+			return "", errors.New("template produced empty result")
+		}
+		return "", nil
+	}
+	name := "__internal/parse/" + templateData
+	tmpl := h.Template.Lookup(name)
+	if tmpl == nil {
+		if _, err := h.includeTemplate(name, templateData); err != nil {
+			return "", err
+		}
+		tmpl = h.Template.Lookup(name)
+	}
+	buf := &bytes.Buffer{}
+	err := tmpl.Execute(buf, data)
+	ret := buf.String()
+	if len(failOnEmptyResult) > 0 && failOnEmptyResult[0] && ret == "" && err == nil {
+		return "", errors.New("template produced empty result")
+	}
+	return ret, err
+}
+
+func (h *helperContext) parseXpath(data interface{}, xpath string, failOnEmptyResult ...bool) (string, error) {
+	templateData, ok := h.mapGetFn(data, xpath).(string)
+	if !ok {
+		return "", fmt.Errorf("failed to obtain template data, the provided object does not contain a string at the provided key '%s'", xpath)
+	}
+	return h.parse(data, templateData, failOnEmptyResult...)
+}
+
+func (h *helperContext) in(array interface{}, value interface{}) bool {
+	arrVal := reflect.ValueOf(array)
+	if kind := arrVal.Kind(); kind != reflect.Slice && kind != reflect.Array {
+		panic("attempting to use 'in' with a non-array type")
+	}
+	if reflectx.IsNil(arrVal) || arrVal.Len() == 0 {
+		return false
+	}
+	return streams.From(array).Contains(value)
 }

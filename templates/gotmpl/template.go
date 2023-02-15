@@ -2,12 +2,13 @@ package gotmpl
 
 import (
 	"fmt"
+	"io"
+	"text/template"
+
 	"github.com/jucardi/go-strings/stringx"
 	"github.com/jucardi/infuse/templates"
 	"github.com/jucardi/infuse/templates/base"
 	"github.com/jucardi/infuse/templates/helpers"
-	"io"
-	"text/template"
 )
 
 // TypeGo is the type for Go templates.

@@ -36,6 +36,10 @@ func GetValue(data map[string]interface{}, key string) (interface{}, error) {
 	split := strings.Split(key, ".")
 	v := reflect.ValueOf(data)
 	for i, s := range split {
+		if s == "" {
+			continue
+		}
+
 		isArray := regex.MatchString(s)
 		index := 0
 
@@ -111,6 +115,9 @@ func SetValue(data map[string]interface{}, key string, value interface{}, makeEm
 	split := strings.Split(key, ".")
 	v := reflect.ValueOf(data)
 	for i, s := range split {
+		if s == "" {
+			continue
+		}
 		if i == len(split)-1 {
 			v.SetMapIndex(reflect.ValueOf(s), reflect.ValueOf(value))
 		} else {
