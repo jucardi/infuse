@@ -23,21 +23,26 @@ const (
 	long = `
 Infuse - the templates CLI parser
     Version: V-%s
-    Built: %s
+    Built:   %s
+    Commit:  %s
+    Arch:    %s
 
 Supports:
     - Go templates
-    - Handlebars templates (coming soon)
 `
 )
 
-var rootCmd = &cobra.Command{
-	Use:              "infuse",
-	Short:            "Parses a Golang template",
-	Long:             fmt.Sprintf(long, version.Version, version.Built),
-	PersistentPreRun: initCmd,
-	Run:              parse,
-}
+var (
+	parsedUsage = fmt.Sprintf(long, version.Version, version.Built, version.Commit, version.Arch)
+
+	rootCmd = &cobra.Command{
+		Use:              "infuse",
+		Short:            "Parses a Golang template",
+		Long:             parsedUsage,
+		PersistentPreRun: initCmd,
+		Run:              parse,
+	}
+)
 
 // Execute starts the execution of the parse command.
 func Execute() {
@@ -56,7 +61,7 @@ func Execute() {
 }
 
 func printUsage(cmd *cobra.Command) {
-	cmd.Println(fmt.Sprintf(long, version.Version, version.Built))
+	cmd.Println(parsedUsage)
 	_ = cmd.Usage()
 }
 
